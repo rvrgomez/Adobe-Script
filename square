@@ -1,0 +1,28 @@
+// Open Image
+var inputFile = File.openDialog("Select a .heic file", "*.heic");
+if (inputFile !== null) {
+    open(inputFile);
+    
+    // Resize to square
+    var originalWidth = app.activeDocument.width;
+    var originalHeight = app.activeDocument.height;
+    
+    if (originalWidth !== originalHeight) {
+        var newSize = Math.max(originalWidth, originalHeight);
+        app.activeDocument.resizeCanvas(newSize, newSize, AnchorPosition.MIDDLECENTER);
+    }
+    
+    // Convert to JPG
+    var jpgOptions = new JPEGSaveOptions();
+    jpgOptions.quality = 12; // Adjust the quality as needed
+    
+    var outputPath = inputFile.fsName.replace(".heic", ".jpg");
+    app.activeDocument.saveAs(new File(outputPath), jpgOptions);
+    
+    // Close the original document without saving changes
+    app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+    
+    alert("Conversion complete! Saved as: " + outputPath);
+} else {
+    alert("No file selected. Script terminated.");
+}
